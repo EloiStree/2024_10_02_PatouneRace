@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3b4c903d887b14f94478cd2cadbf39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_whatToDisable: {fileID: 0}
+  m_whatToDisable: {fileID: 3219975405952986767}
   m_useDebug: 0
 --- !u!1 &5230871172030552084
 GameObject:
