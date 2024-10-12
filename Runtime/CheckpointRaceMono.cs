@@ -15,24 +15,27 @@ public class CheckpointRaceMono : MonoBehaviour
     public UnityEvent m_startRace;
 
 
+    private void Awake()
+    {
+        bool isOneActive = IsOneCheckPointActive();
+        m_atLeastOneActive = isOneActive;
+        m_previousValue = !isOneActive;
+        m_allCheckpointsDeactivated = !isOneActive;
+        if (m_allCheckpointsDeactivated)
+        {
+            m_endRace.Invoke();
+        }
+        else
+        {
+            m_startRace.Invoke();
+        }
+    }
+
     void Update()
     {
 
-        int i = 0;
-        int stop_arrayLenght = m_checkpoints.Length;
-
-        bool isOneActive = false;
-
-        while (i < stop_arrayLenght) {
-            if (m_checkpoints[i].activeSelf)
-            {
-                isOneActive = true;
-                break;
-            }
-            i = i + 1;
-        }
+        bool isOneActive = IsOneCheckPointActive();
         m_atLeastOneActive = isOneActive;
-
         m_previousValue = m_allCheckpointsDeactivated;
         m_allCheckpointsDeactivated = !isOneActive;
 
@@ -48,6 +51,25 @@ public class CheckpointRaceMono : MonoBehaviour
         }
 
 
+    }
+
+    public bool IsOneCheckPointActive()
+    {
+        int i = 0;
+        int stop_arrayLenght = m_checkpoints.Length;
+
+        bool isOneActive = false;
+
+        while (i < stop_arrayLenght)
+        {
+            if (m_checkpoints[i].activeSelf)
+            {
+                isOneActive = true;
+                break;
+            }
+            i = i + 1;
+        }
+        return isOneActive;
     }
 
     [ContextMenu("Display All")]
