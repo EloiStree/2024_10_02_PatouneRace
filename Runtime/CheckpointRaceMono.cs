@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,9 +15,14 @@ public class CheckpointRaceMono : MonoBehaviour
     public UnityEvent m_endRace;
     public UnityEvent m_startRace;
 
+    public bool m_loadInSceneAtAwake = true;
 
     private void Awake()
     {
+        if (m_loadInSceneAtAwake)
+        {
+            FetchCheckpointCurrentGame();
+        }
         bool isOneActive = IsOneCheckPointActive();
         m_atLeastOneActive = isOneActive;
         m_previousValue = !isOneActive;
@@ -97,4 +103,35 @@ public class CheckpointRaceMono : MonoBehaviour
             m_checkpoints[i].SetActive(random);
         }
     }
+
+
+    [ContextMenu("Fetch Childers checkpoint")]
+    public void FetchCheckpointInChilds()
+    {
+        Transform[] t = this.GetComponentsInChildren<Transform>(true);
+        List<PointCheckpointMono> points = new List<PointCheckpointMono>();
+        foreach (Transform tr in t)
+        {
+            PointCheckpointMono point = tr.GetComponent<PointCheckpointMono>();
+            if (point != null)
+            {
+                points.Add(point);
+            }
+        }
+        points = points.Distinct().ToList();
+        m_checkpoints = new GameObject[points.Count];
+        for (int i = 0; i < points.Count; i++)
+        {
+            m_checkpoints[i] = points[i].gameObject;
+        }
+    }
+
+    [ContextMenu("Fetch in scene checkpoint.")]
+    public void FetchCheckpointCurrentGame()
+    {
+        PointCheckpointMono[] points = FindObjectsByType<PointCheckpointMono>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        m_checkpoints = points.Select(x => x.gameObject).Distinct().ToArray();
+    }
+
+    
 }
